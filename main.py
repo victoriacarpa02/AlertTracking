@@ -18,6 +18,7 @@ class Alert:
         # знаходимо на сторінці елемент, який відповідає області користувача
         self.region = browser.find_element(By.XPATH, f'//*[@id="{self.region_codes[region]}" and contains(@class, '
                                                      f'"stateObject")]')
+        self.name_region = region
 
 
 # цей клас перевіряє одноразово, чи є тривога зараз у вказаній області
@@ -34,12 +35,12 @@ class AlertCheck(Alert):
         if 'regionAlert' in status:
             # перевіряємо, чи id елемента не дорівнює 31 (код міста Києва), бо зміст повідомлення ьуде трохи різнитися
             if self.region.get_attribute('id') == 31:
-                return f'Оголошено тривогу в м. {self.region}'
-            return f'Оголошено тривогу в {self.region[:-1]}ій області.'
+                return f'Оголошено тривогу в м. {self.name_region}'
+            return f'Оголошено тривогу в {self.name_region[:-1]}ій області.'
         else:
             if self.region.get_attribute('id') == 31:
-                return f'Тривоги в м. {self.region} немає'
-            return f'Тривоги в {self.region[:-1]}ій області немає.'
+                return f'Тривоги в м. {self.name_region} немає'
+            return f'Тривоги в {self.name_region[:-1]}ій області немає.'
 
 
 # цей клас веде трекінг тривог (відбій/оголошення) та сповіщує користувача повідомленням на комп'ютер
@@ -63,14 +64,14 @@ class AlertNotification(Alert):
                 title = 'Увага!' if 'regionAlert' in new_status else 'Інформація'
                 if title == 'Увага!':
                     if self.region.get_attribute('id') != 31:
-                        message = f'Оголошено тривогу в {self.region[:-1]}ій області.'
+                        message = f'Оголошено тривогу в {self.name_region[:-1]}ій області.'
                     else:
-                        message = f'Оголошено тривогу в м. {self.region}'
+                        message = f'Оголошено тривогу в м. {self.name_region}'
                 else:
                     if self.region.get_attribute('id') != 31:
-                        message = f'Відбій тривоги в {self.region[:-1]}ій області.'
+                        message = f'Відбій тривоги в {self.name_region[:-1]}ій області.'
                     else:
-                        message = f'Відбій тривоги в м. {self.region}'
+                        message = f'Відбій тривоги в м. {self.name_region}'
 
                 # надсилаємо повідомлення на комп'ютер користувачу (завчасно увімкніть сповіщення у системі)
                 notification.notify(
