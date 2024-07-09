@@ -59,7 +59,7 @@ class AlertNotification(Alert):
             # "regionAlert_60" за приклад), які змінюють колір підсвітки області, якщо тривога там задовга; тому
             # просто перевіряти значення атрибуту не вийде, бо програма буде повідомляти про оголошення тривоги
             # декілька разів (зі зміною підсвітки), тож треба також перевіряти довжину атрибуту class
-            if new_status != status and len(new_status.split()) < 3:
+            if new_status != status and len(new_status.split()) < 3 and new_status is not None:
                 status = new_status
                 title = 'Увага!' if 'regionAlert' in new_status else 'Інформація'
                 if title == 'Увага!':
@@ -89,5 +89,5 @@ firefox_options.add_argument("--headless")
 with webdriver.Firefox(options=firefox_options) as browser:
     browser.get('https://map.ukrainealarm.com/')
 
-    obj = AlertNotification('Донецька')
+    obj = AlertNotification('Дніпропетровська')
     obj.alert_track()
